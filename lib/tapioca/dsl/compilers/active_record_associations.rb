@@ -339,7 +339,7 @@ module Tapioca
           end
 
           if association
-            "For more info [see the Rails guide](https://guides.rubyonrails.org/association_basics.html##{association})."
+            "🔗 [Rails Guides](https://guides.rubyonrails.org/association_basics.html##{association})"
           end
         end
 
