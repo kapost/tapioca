@@ -8,6 +8,7 @@ require "yard-sorbet"
 module Tapioca
   class Gemfile
     extend(T::Sig)
+    include GemHelper
 
     Spec = T.type_alias do
       T.any(
@@ -93,6 +94,7 @@ module Tapioca
 
     class GemSpec
       extend(T::Sig)
+      include GemHelper
 
       IGNORED_GEMS = T.let(["sorbet", "sorbet-static", "sorbet-runtime"].freeze, T::Array[String])
 
@@ -114,7 +116,7 @@ module Tapioca
 
       sig { params(gemfile_dir: String).returns(T::Boolean) }
       def ignore?(gemfile_dir)
-        gem_ignored? || gem_in_app_dir?(gemfile_dir)
+        gem_ignored? || gem_in_app_dir?(gemfile_dir, full_gem_path)
       end
 
       sig { returns(String) }
@@ -237,26 +239,9 @@ module Tapioca
         false
       end
 
-      sig { params(path: T.any(String, Pathname)).returns(String) }
-      def to_realpath(path)
-        path_string = path.to_s
-        path_string = File.realpath(path_string) if File.exist?(path_string)
-        path_string
-      end
-
       sig { returns(T::Boolean) }
       def gem_ignored?
         IGNORED_GEMS.include?(name)
-      end
-
-      sig { params(gemfile_dir: String).returns(T::Boolean) }
-      def gem_in_app_dir?(gemfile_dir)
-        !gem_in_bundle_path? && full_gem_path.start_with?(gemfile_dir)
-      end
-
-      sig { returns(T::Boolean) }
-      def gem_in_bundle_path?
-        full_gem_path.start_with?(Bundler.bundle_path.to_s, Bundler.app_cache.to_s)
       end
     end
   end
