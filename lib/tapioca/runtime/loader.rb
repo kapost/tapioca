@@ -56,6 +56,7 @@ module Tapioca
         Object.const_get("Rails::Engine")
           .descendants
           .reject(&:abstract_railtie?)
+          .reject { |engine| engine.to_s =~ /Class/ }
           .reject { |engine| gem_in_app_dir?(Rails.root.to_path, engine.config.root.to_path) }
       end
 
